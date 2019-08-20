@@ -27,23 +27,43 @@ import (
 */
 
 func main() {
-
+	fmt.Printf("$>")
 	// args := os.Args[1:]
+	scanner := bufio.NewScanner(os.Stdin)
+	//scanner.Split()
+	args := make([]string, 0)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+		args = append(args, scanner.Text())
+		fmt.Printf("$>")
+		args = strings.Split(args[0], " ")
 
-	switch os.Args[1] {
+		if len(args) == 2 {
+			switch args[0] {
 
-	case "cat":
-		path := os.Args[2]
-		err := FileRead(path)
-		fmt.Println(err)
+			case "cat":
+				path := args[1]
+				err := FileRead(path)
+				fmt.Println(err)
+			}
+		} else if len(args) > 2 {
+			switch args[0] {
 
-	case "make":
-		path := os.Args[2]
-		content := os.Args[3:]
-		joined := strings.Join(content, " ")
-		err := FileWrite(path, joined)
-		fmt.Println(err)
+			case "make":
+				path := args[1]
+				content := args[2:]
+				joined := strings.Join(content, " ")
+				err := FileWrite(path, joined)
+				fmt.Println(err)
+			}
+		}
+
 	}
+	fmt.Println("Here")
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "reading standard input:", err)
+	}
+
 }
 
 func FileRead(path string) error {
